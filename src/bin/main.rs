@@ -112,13 +112,18 @@ impl Processor for ClientProcessor {
                     let id = works["id"].as_i64().unwrap();
                     let title = works["name"].as_str().unwrap();
                     let foreword = works["foreword"].as_str().unwrap();
+                    let content = works["content"].as_str().unwrap();
                     let time = v["createTime"].as_i64().unwrap();
                     let date_time =
                         NaiveDateTime::from_timestamp_opt((time + 8 * 3600_000) / 1000, 0).unwrap();
                     let mut chain = MessageChain::default();
-                    chain.push(At::new(3040692186));
-                    chain.push(At::new(1573856599));
-                    chain.push(Text::new(format!("\n{date_time}\n{title}\n{foreword}\n活动详情:https://www.allcpp.cn/w/{id}.do")));
+                    if content.contains("票") {
+                        chain.push(At::new(3040692186));
+                        chain.push(At::new(1573856599));
+                        chain.push(Text::new(format!(" 也许跟门票有关：\n\n{title}\n{foreword}\n\n活动详情:https://www.allcpp.cn/w/{id}.do\n\n发布时间:{date_time}")));
+                    } else {
+                        chain.push(Text::new(format!("{title}\n\n活动详情:https://www.allcpp.cn/w/{id}.do\n\n发布时间:{date_time}")));
+                    }
                     match fs::read("last.txt") {
                         Ok(v) => {
                             let last = String::from_utf8(v).unwrap();
