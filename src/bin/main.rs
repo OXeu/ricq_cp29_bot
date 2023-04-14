@@ -117,7 +117,8 @@ impl Processor for ClientProcessor {
                     let date_time =
                         NaiveDateTime::from_timestamp_opt((time + 8 * 3600_000) / 1000, 0).unwrap();
                     let mut chain = MessageChain::default();
-                    if content.contains("票") {
+                    let content_clean = content.replace("开票前即可收到提醒哦", "");
+                    if content_clean.contains("票") {
                         chain.push(At::new(3040692186));
                         chain.push(At::new(1573856599));
                         chain.push(Text::new(format!(" 也许跟门票有关：\n\n{title}\n{foreword}\n\n活动详情:https://www.allcpp.cn/w/{id}.do\n\n发布时间:{date_time}")));
